@@ -1,0 +1,73 @@
+class Main {
+
+    function void main() {
+        var Game game;
+        var boolean win;
+        var boolean gameOver;
+        var boolean replay;
+
+        var int brojac;
+        var int key;
+
+        let replay = true;
+
+        //PETLJA ZA PONOVNO IGRANJE
+        while (replay) {
+
+            let game = Game.new();
+            let win = false;
+            let gameOver = false;
+            let brojac = 0;
+
+            do game.showInstructions();
+            do Sys.wait(5000);
+            do game.initBoard();
+
+            while ((~win) & (~gameOver)){
+                let key = Keyboard.keyPressed();
+                do game.moveHero(key);
+
+                let gameOver = game.failedGame();
+                let win = game.winGame();
+
+                // brzina cudovista
+                if (brojac > 200) {
+                    do game.moveMonsters();      
+                    let gameOver = game.failedGame();
+                    let brojac = 0;
+                }
+
+                let brojac = brojac + 1;
+                let key = 0;
+            }
+
+            if(win){
+                do game.showWinMessage();
+            }
+            else{
+                do game.showFailedMessage();
+            }
+
+            do game.dispose();
+
+            //PORUKA ZA PONOVNO IGRANJE
+            do Output.moveCursor(18, 10);
+            do Output.printString("Pritisni tipku za novu igru");
+
+            // cekaj da korisnik stisne tipku
+            let key = 0;
+            while (key = 0) {
+                let key = Keyboard.keyPressed();
+            }
+
+            // mala pauza da se ne preskoci odmah
+            do Sys.wait(500);
+
+            // reset ekrana
+            do Screen.setColor(false);
+            do Screen.drawRectangle(0, 0, 511, 255);
+        }
+
+        return;
+    }
+}
